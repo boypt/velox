@@ -59,7 +59,7 @@ var indexhtml = []byte(`
 <script src="/velox.js?dev=1"></script>
 <script>
 var foo = {};
-var v = velox("/sync", foo);
+var v = velox("http://velox.jpillora.com/sync", foo);
 v.onchange = function(isConnected) {
 	document.querySelector("#status").innerHTML = isConnected ? "connected" : "disconnected";
 };

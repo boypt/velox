@@ -1,4 +1,4 @@
-// velox - v0.2.12 - https://github.com/jpillora/velox
+// velox - v0.2.13 - https://github.com/jpillora/velox
 // Jaime Pillora <dev@jpillora.com> - MIT Copyright 2016
 (function() {
 ;(function (global) {
@@ -7,7 +7,7 @@ if ("EventSource" in global) return;
 
 var reTrim = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
 
-var EventSource = function (url) {
+var EventSource = function (url, opts) {
   var eventsource = this,
       interval = 500, // polling interval
       lastEventId = null,
@@ -15,6 +15,10 @@ var EventSource = function (url) {
 
   if (!url || typeof url != 'string') {
     throw new SyntaxError('Not enough arguments');
+  }
+
+  if (!opts) {
+    opts = {};
   }
 
   this.URL = url;
@@ -34,6 +38,9 @@ var EventSource = function (url) {
 
       // NOTE: IE7 and upwards support
       var xhr = new XMLHttpRequest();
+      if(opts.withCredentials && 'withCredentials' in xhr) {
+        xhr.withCredentials = opts.withCredentials;
+      }
       xhr.open('GET', eventsource.URL, true);
       xhr.setRequestHeader('Accept', 'text/event-stream');
       xhr.setRequestHeader('Cache-Control', 'no-cache');
