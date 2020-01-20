@@ -41,7 +41,7 @@ class Velox {
     }
     this.obj = obj;
     this.opts = opts || {};
-    this.backoff = new Backoff(this.opts.backoff || {min: 100, max: 20000});
+    this.backoff = new Backoff(this.opts.backoff || { min: 100, max: 20000 });
     if (this.opts.retry === undefined) {
       this.opts.retry = true;
     }
@@ -51,19 +51,19 @@ class Velox {
     this.url = url;
     this.id = "";
     this.version = 0;
-    this.onupdate = function() {
+    this.onupdate = function () {
       /*noop*/
     };
-    this.onerror = function() {
+    this.onerror = function () {
       /*noop*/
     };
-    this.onconnect = function() {
+    this.onconnect = function () {
       /*noop*/
     };
-    this.ondisconnect = function() {
+    this.ondisconnect = function () {
       /*noop*/
     };
-    this.onchange = function() {
+    this.onchange = function () {
       /*noop*/
     };
     this.connected = false;
@@ -118,10 +118,10 @@ class Velox {
     if (this.ws) {
       this.conn = new root.WebSocket(url);
     } else {
-      this.conn = new root.EventSource(url, {withCredentials: true});
+      this.conn = new root.EventSource(url, { withCredentials: true });
     }
     let _this = this;
-    events.forEach(function(e) {
+    events.forEach(function (e) {
       _this.conn["on" + e] = _this["conn" + e].bind(_this);
     });
     this.sleepCheck.last = null;
@@ -143,7 +143,7 @@ class Velox {
     }
     let c = this.conn;
     this.conn = null;
-    events.forEach(function(e) {
+    events.forEach(function (e) {
       c["on" + e] = null;
     });
     if (c && c.readyState !== c.CLOSED) {
@@ -211,7 +211,7 @@ class Velox {
     }
     //perform update
     if (update.delta) {
-      jsonpatch.applyPatch(this.obj, update.body);
+      jsonpatch.applyPatch(this.obj, update.body, true);
     } else {
       merge(this.obj, update.body);
     }
@@ -259,18 +259,18 @@ class Velox {
 }
 
 //public interface
-let velox = function(url, obj, opts) {
+let velox = function (url, obj, opts) {
   if (velox.DEFAULT === SSE || !root.WebSocket) {
     return velox.sse(url, obj, opts);
   }
   return velox.ws(url, obj, opts);
 };
 velox.WS = WS;
-velox.ws = function(url, obj, opts) {
+velox.ws = function (url, obj, opts) {
   return new Velox(WS, url, obj, opts);
 };
 velox.SSE = velox.DEFAULT = SSE;
-velox.sse = function(url, obj, opts) {
+velox.sse = function (url, obj, opts) {
   return new Velox(SSE, url, obj, opts);
 };
 velox.proto = PROTO_VERISON;
